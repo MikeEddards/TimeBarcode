@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+        
+    <title>8x Quick Connect Generator</title>
+
+ 
+</head>
+
+<script type="text/javascript" src="./bwip-js-min.js"></script>
+<script type="text/javascript" src="./html2canvas.min.js" ></script>
+
+<script type="text/javascript">
+
+//    \x01X\x1d\x02PB1\x04
+let btAddress
+function generatem3(){
+    const header = '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x08\x04\x01X\x1d\x02:\x07'
+    const footer = '\x04'
+    let builder = []
+    btAddress = document.getElementById("btm3").value.toUpperCase();
+    for(let i = 0; i < btAddress.length; i++){
+        if(btAddress[i]+btAddress[i+1] == '00'){
+            builder.push('\x25'+'00')
+            i++
+        }else if(btAddress[i]+btAddress[i+1] == '04'){
+            builder.push('\x25'+'04')
+            i++
+        }else{
+            let addr = `${btAddress[i]+btAddress[i +1]}`
+            builder.push('\x25'+addr)
+            i++
+        }
+    }
+    let mkrCode = `${header}${builder.join('')}${footer}`
+   try {
+// The return value is the canvas element
+document.getElementById("addressm3").textContent=btAddress
+document.getElementById("downloadm3").style.visibility = 'visible'
+let canvas = bwipjs.toCanvas('mycanvasm3', {
+        bcid:        'datamatrix',       // Barcode type
+        text:mkrCode,    // Text to encode
+        scale:       3,               // 3x scaling factor
+        height:      10,              // Bar height, in millimeters
+        includetext: true,            // Show human-readable text
+        textxalign:  'center',        // Always good to set this
+        width: 20,
+        height: 20
+    });
+} catch (e) {
+// `e` may be a string or Error object
+}
+}
+function downloadm3(){
+  
+  html2canvas(document.querySelector('#canvam3')).then(newCanvas =>{
+       document.body.appendChild(newCanvas).setAttribute('id','downloadBarcodem3')
+   }).then(e =>{
+     let image = document.getElementById('downloadBarcodem3').toDataURL("image/png")
+     downloadImage(image,`${btAddress}.png`)   
+   })
+   function downloadImage(data, filename = 'untitled.jpeg') {
+     var a = document.createElement('a');
+     a.href = data;
+     a.download = filename;
+     document.body.appendChild(a);
+     a.click();
+ }
+ document.getElementById("btm3").value = ''
+ }
+// {01}X{1d}{02}P{1b}4{04}
+// {01}X{1d}{02}PB0{04}
+// {01}X{1d}{02}P{08}1{04}
+// {01}X{1d}{02}:{07}%00"X2{c8}{ae}{04}
+
+// '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x420\x04\x01X\x1d\x02:%07%00%02%58%32%C8%AE%04'
+
+
+function generate(){
+    const header = '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x420\x04\x01X\x1d\x02:\x07'
+    const footer = '\x04'
+    let builder = []
+    btAddress = document.getElementById("bt").value.toUpperCase();
+    for(let i = 0; i < btAddress.length; i++){
+        if(btAddress[i]+btAddress[i+1] == '00'){
+            builder.push('\x25'+'00')
+            i++
+        }else if(btAddress[i]+btAddress[i+1] == '04'){
+            builder.push('\x25'+'04')
+            i++
+        }else{
+            let addr = `${btAddress[i]+btAddress[i +1]}`
+            builder.push('\x25'+addr)
+            i++
+        }
+    }
+    let mkrCode = `${header}${builder.join('')}${footer}`
+   try {
+// The return value is the canvas element
+    document.getElementById("address").textContent=btAddress
+    document.getElementById("download").style.visibility = 'visible'
+let canvas = bwipjs.toCanvas('mycanvas', {
+        bcid:        'datamatrix',       // Barcode type
+        text:mkrCode,    // Text to encode
+        scale:       3,               // 3x scaling factor
+        height:      10,              // Bar height, in millimeters
+        includetext: true,            // Show human-readable text
+        textxalign:  'center',        // Always good to set this
+        width: 20,
+        height: 20
+    });
+} catch (e) {
+// `e` may be a string or Error object
+}
+// ac3fa40c542f
+}
+function download(){
+  
+ html2canvas(document.querySelector('#canva')).then(newCanvas =>{
+      document.body.appendChild(newCanvas).setAttribute('id','downloadBarcode')
+  }).then(e =>{
+    let image = document.getElementById('downloadBarcode').toDataURL("image/png")
+    downloadImage(image,`${btAddress}.png`)   
+  })
+  function downloadImage(data, filename = 'untitled.jpeg') {
+    var a = document.createElement('a');
+    a.href = data;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+}
+document.getElementById("bt").value = ''
+}
+
+// code color #DC3545
+</script>
+<body>
+    <div class="box">
+        <h1>For 8x modems</h1>
+        <input id="btm3" type="text" placeholder="Input BlueTooth Address"/>
+        <button onclick="generatem3()">Generate</button>
+    </div>
+    <div id="canvasdivm3">
+        <div id="canvam3">
+            <canvas id="mycanvasm3"></canvas>
+            <p id="addressm3"></p>
+        </div>
+    </div>
+    <div class="downloadBttnDiv">
+
+        <button id="downloadm3" style="visibility: hidden;" onclick="downloadm3()">Download Barcode</button>
+    </div>
+
+</body>
+
+<style>
+    body{
+    max-width: 100%;
+    max-height: 100%;
+}
+
+</style>
+</html>
+
