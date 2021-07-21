@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
         
-    <title>8x Quick Connect Generator</title>
+    <title>Time Barcode</title>
 
  
 </head>
@@ -15,97 +15,70 @@
 <script type="text/javascript" src="./html2canvas.min.js" ></script>
 
 <script type="text/javascript">
-
-//    \x01X\x1d\x02PB1\x04
-let btAddress
-function generatem3(){
-    const header = '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x08\x04\x01X\x1d\x02:\x07'
-    const footer = '\x04'
-    let builder = []
-    btAddress = document.getElementById("btm3").value.toUpperCase();
-    for(let i = 0; i < btAddress.length; i++){
-        if(btAddress[i]+btAddress[i+1] == '00'){
-            builder.push('\x25'+'00')
-            i++
-        }else if(btAddress[i]+btAddress[i+1] == '04'){
-            builder.push('\x25'+'04')
-            i++
-        }else{
-            let addr = `${btAddress[i]+btAddress[i +1]}`
-            builder.push('\x25'+addr)
-            i++
-        }
-    }
-    let mkrCode = `${header}${builder.join('')}${footer}`
-   try {
-// The return value is the canvas element
-document.getElementById("addressm3").textContent=btAddress
-document.getElementById("downloadm3").style.visibility = 'visible'
-let canvas = bwipjs.toCanvas('mycanvasm3', {
-        bcid:        'datamatrix',       // Barcode type
-        text:mkrCode,    // Text to encode
-        scale:       3,               // 3x scaling factor
-        height:      10,              // Bar height, in millimeters
-        includetext: true,            // Show human-readable text
-        textxalign:  'center',        // Always good to set this
-        width: 20,
-        height: 20
-    });
-} catch (e) {
-// `e` may be a string or Error object
-}
-}
-function downloadm3(){
-  
-  html2canvas(document.querySelector('#canvam3')).then(newCanvas =>{
-       document.body.appendChild(newCanvas).setAttribute('id','downloadBarcodem3')
-   }).then(e =>{
-     let image = document.getElementById('downloadBarcodem3').toDataURL("image/png")
-     downloadImage(image,`${btAddress}.png`)   
-   })
-   function downloadImage(data, filename = 'untitled.jpeg') {
-     var a = document.createElement('a');
-     a.href = data;
-     a.download = filename;
-     document.body.appendChild(a);
-     a.click();
- }
- document.getElementById("btm3").value = ''
- }
-// {01}X{1d}{02}P{1b}4{04}
-// {01}X{1d}{02}PB0{04}
-// {01}X{1d}{02}P{08}1{04}
-// {01}X{1d}{02}:{07}%00"X2{c8}{ae}{04}
-
-// '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x420\x04\x01X\x1d\x02:%07%00%02%58%32%C8%AE%04'
+generate()
 
 
 function generate(){
-    const header = '\x01X\x1d\x02P\x081\x04\x01X\x1d\x02P\x1b4\x04\x01X\x1d\x02P\x420\x04\x01X\x1d\x02:\x07'
-    const footer = '\x04'
-    let builder = []
-    btAddress = document.getElementById("bt").value.toUpperCase();
-    for(let i = 0; i < btAddress.length; i++){
-        if(btAddress[i]+btAddress[i+1] == '00'){
-            builder.push('\x25'+'00')
-            i++
-        }else if(btAddress[i]+btAddress[i+1] == '04'){
-            builder.push('\x25'+'04')
-            i++
-        }else{
-            let addr = `${btAddress[i]+btAddress[i +1]}`
-            builder.push('\x25'+addr)
-            i++
-        }
+   
+    let time = new Date()
+    let month = time.getMonth()+1
+    if(month < 10){
+        month.toString()
+        month = `0${month}`
     }
-    let mkrCode = `${header}${builder.join('')}${footer}`
+    let day = time.getDate()
+    if(day < 10){
+        day.toString()
+        day = `0${day}`
+    }
+    let year = time.getFullYear()-2000
+    let hour = time.getHours()
+    let adjustedHours 
+    if((hour > 12) || (hour == 0)){
+        if(hour == 13){
+            adjustedHours = 1
+        }else if(hour == 14){
+            adjustedHours = 2
+        }else if(hour == 15){
+            adjustedHours =3
+        }else if(hour == 16){
+            adjustedHours =4
+        }else if(hour == 17){
+            adjustedHours =5
+        }else if(hour == 18){
+            adjustedHours =6
+        }else if(hour == 19){
+            adjustedHours =7
+        }else if(hour == 20){
+            adjustedHours =8
+        }else if(hour == 21){
+            adjustedHours =9
+        }else if(hour == 22){
+            adjustedHours =10
+        }else if(hour == 23){
+            adjustedHours =11
+        }else if(hour == 0){
+            adjustedHours =12
+        }
+    }else{
+            adjustedHours = hour
+        }
+
+    let minutes = time.getMinutes()
+    let amPm = (hour >= 12) ? 'PM' : 'AM'
+    let curTime = `@${month}${day}${year}${adjustedHours}${minutes}${amPm}`
+    let displaytime = `${month}/${day}/${year} ${adjustedHours}:${minutes} ${amPm}` 
+   
+    
+    
    try {
 // The return value is the canvas element
-    document.getElementById("address").textContent=btAddress
-    document.getElementById("download").style.visibility = 'visible'
+    document.getElementById("text").innerText=displaytime
+
 let canvas = bwipjs.toCanvas('mycanvas', {
-        bcid:        'datamatrix',       // Barcode type
-        text:mkrCode,    // Text to encode
+
+        bcid:        'qrcode',    // Barcode type
+        text: curTime ,               // Text to encode
         scale:       3,               // 3x scaling factor
         height:      10,              // Bar height, in millimeters
         includetext: true,            // Show human-readable text
@@ -116,51 +89,41 @@ let canvas = bwipjs.toCanvas('mycanvas', {
 } catch (e) {
 // `e` may be a string or Error object
 }
-// ac3fa40c542f
+
 }
-function download(){
-  
- html2canvas(document.querySelector('#canva')).then(newCanvas =>{
-      document.body.appendChild(newCanvas).setAttribute('id','downloadBarcode')
-  }).then(e =>{
-    let image = document.getElementById('downloadBarcode').toDataURL("image/png")
-    downloadImage(image,`${btAddress}.png`)   
-  })
-  function downloadImage(data, filename = 'untitled.jpeg') {
-    var a = document.createElement('a');
-    a.href = data;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-}
-document.getElementById("bt").value = ''
-}
+
+setInterval(() => {
+    generate()
+}, 1000);
 
 // code color #DC3545
 </script>
 <body>
-    <div class="box">
-        <h1>For 8x modems</h1>
-        <input id="btm3" type="text" placeholder="Input BlueTooth Address"/>
-        <button onclick="generatem3()">Generate</button>
-    </div>
-    <div id="canvasdivm3">
-        <div id="canvam3">
-            <canvas id="mycanvasm3"></canvas>
-            <p id="addressm3"></p>
+    <div id="canvasdiv">
+        <div id="canvas">
+            <canvas id="mycanvas"></canvas>
+            <h1 id="text"></h1>
         </div>
+       
     </div>
-    <div class="downloadBttnDiv">
-
-        <button id="downloadm3" style="visibility: hidden;" onclick="downloadm3()">Download Barcode</button>
-    </div>
-
 </body>
 
 <style>
     body{
     max-width: 100%;
     max-height: 100%;
+}
+#canvasdiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+#canvas{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 </style>
