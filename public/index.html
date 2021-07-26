@@ -67,9 +67,13 @@ function generate(){
         adjustedHours = `0${adjustedHours}`
     }    
     let minutes = time.getMinutes()
+    if(minutes < 10){
+        minutes = `0${minutes}`
+    }
+    let seconds = time.getSeconds()
     let amPm = (hour >= 12) ? 'PM' : 'AM'
-    let curTime = `@${month}${day}${year}${adjustedHours}${minutes}${amPm}`
-    let displaytime = `${month}/${day}/${year} ${adjustedHours}:${minutes} ${amPm}` 
+    let curTime = `@${time}`
+    let displaytime = `${month}/${day}/${year} ${adjustedHours}:${minutes}:${seconds} ${amPm}` 
    
     
     
