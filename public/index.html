@@ -14,96 +14,7 @@
 <script type="text/javascript" src="./bwip-js-min.js"></script>
 <script type="text/javascript" src="./html2canvas.min.js" ></script>
 
-<script type="text/javascript">
-generate()
 
-
-function generate(){
-   
-    let time = new Date()
-    let month = time.getMonth()+1
-    if(month < 10){
-        month.toString()
-        month = `0${month}`
-    }
-    let day = time.getDate()
-    if(day < 10){
-        day.toString()
-        day = `0${day}`
-    }
-    let year = time.getFullYear()-2000
-    let hour = time.getHours()
-    let adjustedHours 
-    if((hour > 12) || (hour == 0)){
-        if(hour == 13){
-            adjustedHours = 1
-        }else if(hour == 14){
-            adjustedHours = 2
-        }else if(hour == 15){
-            adjustedHours =3
-        }else if(hour == 16){
-            adjustedHours =4
-        }else if(hour == 17){
-            adjustedHours =5
-        }else if(hour == 18){
-            adjustedHours =6
-        }else if(hour == 19){
-            adjustedHours =7
-        }else if(hour == 20){
-            adjustedHours =8
-        }else if(hour == 21){
-            adjustedHours =9
-        }else if(hour == 22){
-            adjustedHours =10
-        }else if(hour == 23){
-            adjustedHours =11
-        }else if(hour == 0){
-            adjustedHours =12
-        }
-    }else{
-            adjustedHours = hour
-        }
-    if(adjustedHours < 10){
-        adjustedHours = `0${adjustedHours}`
-    }    
-    let minutes = time.getMinutes()
-    if(minutes < 10){
-        minutes = `0${minutes}`
-    }
-    let seconds = time.getSeconds()
-    let amPm = (hour >= 12) ? 'PM' : 'AM'
-    let curTime = `@${time}`
-    let displaytime = `${month}/${day}/${year} ${adjustedHours}:${minutes}:${seconds} ${amPm}` 
-   
-    
-    
-   try {
-// The return value is the canvas element
-    document.getElementById("text").innerText=displaytime
-
-let canvas = bwipjs.toCanvas('mycanvas', {
-
-        bcid:        'qrcode',    // Barcode type
-        text: curTime ,               // Text to encode
-        scale:       3,               // 3x scaling factor
-        height:      10,              // Bar height, in millimeters
-        includetext: true,            // Show human-readable text
-        textxalign:  'center',        // Always good to set this
-        width: 20,
-        height: 20
-    });
-} catch (e) {
-// `e` may be a string or Error object
-}
-
-}
-
-setInterval(() => {
-    generate()
-}, 1000);
-
-// code color #DC3545
-</script>
 <body>
     <div id="canvasdiv">
         <div id="canvas">
@@ -113,7 +24,101 @@ setInterval(() => {
        
     </div>
 </body>
+<script type="text/javascript">
 
+
+
+    function generate(){
+       
+        let time = new Date()
+        let month = time.getMonth()+1
+        if(month < 10){
+            month.toString()
+            month = `0${month}`
+        }
+        let day = time.getDate()
+        if(day < 10){
+            day.toString()
+            day = `0${day}`
+        }
+        let year = time.getFullYear()-2000
+        let hour = time.getHours()
+        let adjustedHours 
+        if((hour > 12) || (hour == 0)){
+            if(hour == 13){
+                adjustedHours = 1
+            }else if(hour == 14){
+                adjustedHours = 2
+            }else if(hour == 15){
+                adjustedHours =3
+            }else if(hour == 16){
+                adjustedHours =4
+            }else if(hour == 17){
+                adjustedHours =5
+            }else if(hour == 18){
+                adjustedHours =6
+            }else if(hour == 19){
+                adjustedHours =7
+            }else if(hour == 20){
+                adjustedHours =8
+            }else if(hour == 21){
+                adjustedHours =9
+            }else if(hour == 22){
+                adjustedHours =10
+            }else if(hour == 23){
+                adjustedHours =11
+            }else if(hour == 0){
+                adjustedHours =12
+            }
+        }else{
+                adjustedHours = hour
+            }
+        if(adjustedHours < 10){
+            adjustedHours = `0${adjustedHours}`
+        }    
+        let minutes = time.getMinutes()
+        if(minutes < 10){
+            minutes = `0${minutes}`
+        }
+        let seconds = time.getSeconds()
+        if(seconds < 10){
+            seconds = `0${seconds}`
+        }
+        let amPm = (hour >= 12) ? 'PM' : 'AM'
+        let curTime = `@${time}`
+        // console.log(`@${time}`)
+        // console.log(time.toLocaleTimeString())
+        let displaytime = `${month}/${day}/${year} ${adjustedHours}:${minutes}:${seconds} ${amPm}` 
+       
+        
+        
+       try {
+    // The return value is the canvas element
+        document.getElementById("text").innerText=displaytime
+    
+    let canvas = bwipjs.toCanvas('mycanvas', {
+    
+            bcid:        'qrcode',    // Barcode type
+            text: curTime ,               // Text to encode
+            scale:       3,               // 3x scaling factor
+            height:      10,              // Bar height, in millimeters
+            includetext: true,            // Show human-readable text
+            textxalign:  'center',        // Always good to set this
+            width: 20,
+            height: 20
+        });
+    } catch (e) {
+    // `e` may be a string or Error object
+    }
+    
+    }
+    
+    setInterval(() => {
+        generate()
+    }, 1000);
+    
+    // code color #DC3545
+    </script>
 <style>
     body{
     max-width: 100%;
